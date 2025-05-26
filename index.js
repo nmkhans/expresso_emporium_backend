@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { MongoClient, ServerApiVersion } from "mongodb";
+import "dotenv/config";
 
 const app = express();
 const port = process.env.PORT || 9000;
@@ -9,8 +10,7 @@ const port = process.env.PORT || 9000;
 app.use(cors());
 app.use(express.json());
 
-const uri =
-  "mongodb+srv://moinkhan:100504248668420123.@expresso-emporium.znax4hm.mongodb.net/?retryWrites=true&w=majority&appName=expresso-emporium";
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@expresso-emporium.znax4hm.mongodb.net/?retryWrites=true&w=majority&appName=expresso-emporium`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -27,6 +27,19 @@ const server = async () => {
     console.log("database connected successfully.");
 
     const database = client.db("expresso_emporium");
+    const coffeeCollection = database.collection("coffees");
+
+    //? post a coffee
+    app.post("/coffee/add", async (req, res) => {
+      const coffeeData = req.body;
+      const result = await coffeeCollection.insertOne(coffeeData);
+
+      res.send({
+        success: true,
+        message: "Coffee added successfully.",
+        data: result,
+      });
+    });
   } finally {
     //// client.close()
   }

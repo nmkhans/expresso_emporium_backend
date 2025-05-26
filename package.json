@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "set NODE_ENV=dev && nodemon index.js",
     "start": "node index.js"
   },
   "type": "module",
@@ -14,6 +14,7 @@
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongodb": "^6.16.0"
   }
