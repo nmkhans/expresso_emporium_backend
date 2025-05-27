@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import "dotenv/config";
+import { ObjectId } from "mongodb";
 
 const app = express();
 const port = process.env.PORT || 9000;
@@ -29,16 +30,44 @@ const server = async () => {
     const database = client.db("expresso_emporium");
     const coffeeCollection = database.collection("coffees");
 
+    //? get all coffee
+    app.get("/coffee", async (req, res) => {
+      const cursor = coffeeCollection.find();
+      const result = await cursor.toArray();
+
+      res.json({
+        success: true,
+        message: "All coffee data.",
+        data: result,
+      });
+    });
+
     //? post a coffee
     app.post("/coffee/add", async (req, res) => {
       const coffeeData = req.body;
       const result = await coffeeCollection.insertOne(coffeeData);
 
-      res.send({
+      res.json({
         success: true,
         message: "Coffee added successfully.",
         data: result,
       });
+    });
+
+    //? delete a coffee
+    app.delete("/coffee/delete/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await coffeeCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+
+      if (result.deletedCount > 0) {
+        res.json({
+          success: true,
+          message: "Coffee deleted.",
+          data: result,
+        });
+      }
     });
   } finally {
     //// client.close()
