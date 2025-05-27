@@ -68,6 +68,38 @@ const server = async () => {
       });
     });
 
+    //? update a coffee
+    app.put("/coffee/update/:id", async (req, res) => {
+      const { id } = req.params;
+      const { _id, ...data } = req.body;
+
+      const query = {
+        _id: new ObjectId(id),
+      };
+
+      const updatedDoc = {
+        $set: data,
+      };
+
+      const option = {
+        upsert: true,
+      };
+
+      const result = await coffeeCollection.updateOne(
+        query,
+        updatedDoc,
+        option
+      );
+
+      if (result.modifiedCount > 0) {
+        res.json({
+          success: true,
+          message: "Coffee updated.",
+          data: result,
+        });
+      }
+    });
+
     //? delete a coffee
     app.delete("/coffee/delete/:id", async (req, res) => {
       const { id } = req.params;
