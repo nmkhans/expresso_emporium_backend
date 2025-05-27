@@ -42,6 +42,20 @@ const server = async () => {
       });
     });
 
+    //? get a single coffee
+    app.get("/coffee/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await coffeeCollection.findOne({
+        _id: new ObjectId(id),
+      });
+
+      res.json({
+        success: true,
+        message: "Coffee data for: " + id,
+        data: result,
+      });
+    });
+
     //? post a coffee
     app.post("/coffee/add", async (req, res) => {
       const coffeeData = req.body;
